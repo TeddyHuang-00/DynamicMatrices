@@ -45,14 +45,14 @@ jobs:
       - name: Collect results
         uses: actions/download-artifact@v2
         with:
-          path: results
+          path: artifacts
       - name: Check downloaded artifacts
         run: ls -R
-        working-directory: results
+        working-directory: artifacts/results
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: results/*.txt
+          files: artifacts/results/*.txt
           name: Test result (${{ github.run_number }})
           tag_name: ${{ github.run_number }}
           body: ${{ github.run_number }}
