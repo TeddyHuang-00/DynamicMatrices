@@ -49,7 +49,7 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: artifacts/*.txt
+          files: artifacts/*/*.txt
           name: Test result (${{ github.run_number }})
           tag_name: ${{ github.run_number }}
           body: ${{ github.run_number }}
