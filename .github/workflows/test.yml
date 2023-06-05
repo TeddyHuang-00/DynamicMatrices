@@ -31,7 +31,7 @@ jobs:
           python-version: 3.11
       - name: Run tests
         run: |
-          python3 test.py ${{ matrix.years }}
+          python3 main.py ${{ matrix.years }}
       - name: Upload results
         uses: actions/upload-artifact@v2
         with:
