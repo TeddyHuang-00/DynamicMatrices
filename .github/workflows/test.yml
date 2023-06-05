@@ -1,0 +1,58 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - id: set-matrix
+        run: |
+          echo "year_range=$(seq 12 $(date +'%y') | tr '\n' ' ' | awk '{print \"[ \" $0 \"]\"}')" >> $GITHUB_OUTPUT
+    outputs:
+      year_range: ${{ steps.set-matrix.outputs.year_range }}
+
+  test:
+    needs: build-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        years: ${{ fromJson(needs.build-matrix.outputs.year_range) }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+      - name: Run tests
+        run: |
+          python3 test.py ${{ matrix.years }}
+      - name: Upload results
+        uses: actions/upload-artifact@v2
+        with:
+          name: results-${{ matrix.years }}
+          path: ${{ matrix.years }}.txt
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Collect results
+        uses: actions/download-artifact@v2
+        with:
+          name: results-*
+          path: artifacts/
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/*.txt
+          name: Test result (${{ github.run_number }})
+          tag_name: ${{ github.run_number }}
+          body: ${{ github.run_number }}
+          draft: false
+          prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
