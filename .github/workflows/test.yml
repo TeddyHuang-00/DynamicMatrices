@@ -32,8 +32,9 @@ jobs:
       - name: Get year range
         id: get-year-range
         run: |
-          next_year=$(expr ${${{ matrix.years }}} + 1)
-          echo "range=${{ matrix.years }}-${next_year}" >> $GITHUB_OUTPUT
+          start_year=${{ matrix.years }}
+          end_year=$(expr ${start_year} + 1)
+          echo "range=${start_year}-${end_year}" >> $GITHUB_OUTPUT
       - name: Run tests
         run: |
           python3 main.py ${{ steps.get-year-range.outputs.range }}
@@ -41,7 +42,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: results
-          path: ${{ matrix.years }}.txt
+          path: ./*.txt
 
   release:
     needs: test
