@@ -12,7 +12,7 @@ jobs:
     steps:
       - id: set-matrix
         run: |
-          years=$(echo $(seq 11 $(date +'%y') | tr '\n' ' ' | awk '{print "[ " $0 "]"}'))
+          years=$(echo $(seq 12 $(date +'%y') | tr '\n' ',' | sed 's/,$//' | awk '{print "[" $0 "]"}'))
           echo "year_range=${years}" >> $GITHUB_OUTPUT
     outputs:
       year_range: ${{ steps.set-matrix.outputs.year_range }}
