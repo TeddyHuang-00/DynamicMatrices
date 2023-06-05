@@ -45,7 +45,6 @@ jobs:
       - name: Collect results
         uses: actions/download-artifact@v2
         with:
-          name: results-*
           path: artifacts/
       - name: Release
         uses: softprops/action-gh-release@v1
